@@ -1,0 +1,266 @@
+{
+	"info": {
+		"_postman_id": "3194f33a-ee50-49ba-b8b2-1d82ec3ae89b",
+		"name": "mtn",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "signin",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serveraddress}}/api/auth/signin",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admintoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serveraddress}}/api/user",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admintoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"sohasaleh\",\r\n    \"email\": \"so.ha@yahoo.coom\",\r\n    \"password\": \"sohasaleh\",\r\n    \"role\": [\"admin\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serveraddress}}/api/user",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admintoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"sohasaleh\",\r\n    \"email\": \"so.ha@yahoo.coom\",\r\n    \"password\": \"sohasaleh2\",\r\n    \"role\": [\"admin\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serveraddress}}/api/user",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admintoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{serveraddress}}/api/user/6",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all roles",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admintoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serveraddress}}/api/role",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add role",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admintoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"ROLE_MODERATOR\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serveraddress}}/api/role",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete role",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admintoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{serveraddress}}/api/role/3",
+					"host": [
+						"{{serveraddress}}"
+					],
+					"path": [
+						"api",
+						"role",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
