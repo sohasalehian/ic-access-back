@@ -331,27 +331,30 @@ public class AuthController {
         User user = optionalUser.get();
 
         if (!user.getEmail().equals(userRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email can't be changed!"));
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Email can't be changed!"));
+            user.setEmail(userRequest.getEmail());
         }
 
-        Set<String> strRoles = new HashSet<>(userRequest.getRoles());
-        Set<Role> roles = new HashSet<>();
+        if (userRequest.getRoles() != null) {
+            Set<String> strRoles = new HashSet<>(userRequest.getRoles());
+            Set<Role> roles = new HashSet<>();
 
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName("ROLE_USER")
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                Role userRole = roleRepository.findByName(role)
+            if (strRoles == null) {
+                Role userRole = roleRepository.findByName("ROLE_USER")
                         .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                 roles.add(userRole);
-            });
+            } else {
+                strRoles.forEach(role -> {
+                    Role userRole = roleRepository.findByName(role)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(userRole);
+                });
+            }
+            user.setRoles(roles);
         }
 
-        user.setRoles(roles);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
