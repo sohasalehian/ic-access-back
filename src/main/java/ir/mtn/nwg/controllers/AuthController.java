@@ -1,5 +1,6 @@
 package ir.mtn.nwg.controllers;
 
+import ir.mtn.nwg.models.Data;
 import ir.mtn.nwg.models.Report;
 import ir.mtn.nwg.models.Role;
 import ir.mtn.nwg.models.User;
@@ -9,6 +10,7 @@ import ir.mtn.nwg.payload.request.UserRequest;
 import ir.mtn.nwg.payload.request.UserRequest2;
 import ir.mtn.nwg.payload.response.JwtResponse;
 import ir.mtn.nwg.payload.response.MessageResponse;
+import ir.mtn.nwg.repository.DataRepository;
 import ir.mtn.nwg.repository.ReportRepository;
 import ir.mtn.nwg.repository.RoleRepository;
 import ir.mtn.nwg.repository.UserRepository;
@@ -29,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,15 +52,55 @@ public class AuthController {
 
     private final ReportRepository reportRepository;
 
+    private final DataRepository dataRepository;
+
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserRepository userRepository,
-                          RoleRepository roleRepository, PasswordEncoder encoder, ReportRepository reportRepository) {
+                          RoleRepository roleRepository, PasswordEncoder encoder, ReportRepository reportRepository,
+                          DataRepository dataRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.reportRepository = reportRepository;
+        this.dataRepository = dataRepository;
+    }
+
+    @GetMapping("/sites")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+    public ResponseEntity<?> getSites() {
+        return ResponseEntity.ok(dataRepository.findDistinctSites());
+    }
+
+    @GetMapping("/data")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+    public ResponseEntity<?> getData(@RequestParam String site) {
+        if (site != null && !site.isEmpty()) {
+            Map<Date, Map<String, Object>> dateData = new HashMap<>();
+            dataRepository.findBySite(site).orElse(new ArrayList<>()).stream().forEach(data -> {
+                Map<String, Object> dataEntry = dateData.getOrDefault(data.getDate(), new HashMap<>());
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
+                dataEntry.put("date", simpleDateFormat.format(data.getDate()));
+                dataEntry.put(data.getKpi(), data.getValue());
+
+                dateData.put(data.getDate(), dataEntry);
+            });
+            List<Object> data = dateData.values().stream()
+                    .sorted(Comparator.comparing(o -> ((String) o.get("date"))))
+                .collect(Collectors.toList());
+
+            List<String> kpis = dataRepository.findDistinctKpisPerSite(site);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("data", data);
+            result.put("kpis", kpis);
+
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.badRequest().body("Site must be send");
+        }
     }
 
     @GetMapping("/report")
@@ -101,7 +144,7 @@ public class AuthController {
         }
         List<Object> children = new LinkedList<>();
 
-        List<Report> reports = reportRepository.findByParentAndUser(report, user);
+        List<Report> reports = reportRepository.findByParentAndUser(report, user).orElse(new ArrayList<>());
         if (reports.isEmpty() && report != null && report.getLink() != null && !report.getLink().isEmpty()) {
             node.put("isLeaf", true);
             node.put("link", report.getLink());
