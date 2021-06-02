@@ -81,7 +81,7 @@ public class AuthController {
             dataRepository.findBySite(site).orElse(new ArrayList<>()).stream().forEach(data -> {
                 Map<String, Object> dataEntry = dateData.getOrDefault(data.getDate(), new HashMap<>());
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 dataEntry.put("date", simpleDateFormat.format(data.getDate()));
                 dataEntry.put(data.getKpi(), data.getValue());
 
