@@ -38,7 +38,7 @@ public class MoController {
                 MoEntity.valueOf(moEntity), MoView.valueOf(moView)));
     }
 
-    @GetMapping("/kpis")
+    @GetMapping("/kpi")
     public ResponseEntity<?> getKpis(@RequestParam(required = false) String moEntity,
                                       @RequestParam(required = false) String moView) {
         return ResponseEntity.ok(dataRepository.findDistinctKpisByMoEntityAndMoView(
